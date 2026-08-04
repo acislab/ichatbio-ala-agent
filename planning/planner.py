@@ -2,6 +2,7 @@ import logging
 from openai import AsyncOpenAI
 import instructor
 
+from common.config import get_config_value
 from planning.models import PlannerOutput
 from planning.registry import registry
 
@@ -96,7 +97,7 @@ Your job:
         logger.warning(f"[PLANNER] Planning query: {query}")
 
         result = await self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=get_config_value("LLM", "gpt-4o-mini"),
             messages=[
                 {"role": "system", "content": self._system_prompt},
                 {"role": "user", "content": query},
