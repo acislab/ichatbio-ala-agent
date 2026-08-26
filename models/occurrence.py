@@ -51,9 +51,9 @@ class OccurrenceSearchParams(BaseModel):
         ge=0
     )
     
-    pageSize: Optional[int] = Field(1000,
+    pageSize: Optional[int] = Field(100,
         description="Number of records to return per page",
-        ge=1, le=1000
+        ge=1, le=100
     )
     
     # Sorting parameters
