@@ -19,7 +19,7 @@ from extraction.extractor import ALAExtractor
 from resolution.resolver import ALAParameterResolver
 from routing.router import ALARouter
 from execution.executor import ALAExecutor
-from common.config import get_config_value, update_llm_credentials
+from common.config import get_llm_credentials, set_llm_credentials
 
 from instructor.exceptions import InstructorRetryException
 
@@ -56,9 +56,6 @@ class ALAAgent(IChatBioAgent):
 
     def __init__(self):
         # Infrastructure
-        self.openai_base_url = get_config_value(
-            "OPENAI_BASE_URL", "https://api.ai.it.ufl.edu"
-        )
         redis_client = aioredis.from_url(
             "redis://localhost:6379",
             decode_responses=True
@@ -68,15 +65,8 @@ class ALAAgent(IChatBioAgent):
         self.router    = ALARouter()
         self.executor  = ALAExecutor(ala_logic)
 
-    def _build_openai_client(self) -> AsyncOpenAI | None:
-        api_key = get_config_value("OPENAI_API_KEY")
-        if not api_key:
-            return None
-
-        return AsyncOpenAI(
-            api_key=api_key,
-            base_url=self.openai_base_url,
-        )
+    def _build_openai_client(self) -> AsyncOpenAI:
+        return AsyncOpenAI(**get_llm_credentials())
 
     @override
     def get_agent_card(self) -> AgentCard:
@@ -123,14 +113,9 @@ class ALAAgent(IChatBioAgent):
         """
         logger.warning(f"[AGENT] Query: {request}")
 
-        update_llm_credentials(metadata)
+        set_llm_credentials(metadata)
 
         openai_client = self._build_openai_client()
-        if openai_client is None:
-            await context.reply(
-                "Configuration error: OpenAI API key not found."
-            )
-            return
 
         planner = ALAPlanner(openai_client)
         extractor = ALAExtractor(openai_client)

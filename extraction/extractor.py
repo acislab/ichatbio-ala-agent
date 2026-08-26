@@ -6,6 +6,7 @@ from openai import AsyncOpenAI
 import instructor
 from instructor.exceptions import InstructorRetryException
 
+from common.config import get_config_value
 from planning.models import PlannerOutput
 from extraction.schemas.occurrence_search import OccurrenceSearchExtraction
 from extraction.schemas.facet_breakdown import FacetBreakdownExtraction
@@ -159,7 +160,7 @@ class ALAExtractor:
 
         try:
             result = await self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=get_config_value("LLM", "gpt-4o-mini"),
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user",   "content": query},
