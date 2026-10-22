@@ -76,8 +76,8 @@ class ALAAgent(IChatBioAgent):
                 "Search Australian biodiversity data using natural language. "
                 "Ask about species occurrences, distributions, taxonomy, and more."
             ),
-            icon="https://www.ala.org.au/wp-content/uploads/2018/06/logo-ALA-1-300x140.png",
-            url="http://localhost:9999",
+            documentation_url="https://github.com/acislab/ichatbio-ala-agent",
+            icon="https://www.ala.org.au/app/uploads/2020/06/ALA_Logo_Mark-only-300x279.png",
             entrypoints=[
                 AgentEntrypoint(
                     id="search_biodiversity_data",
